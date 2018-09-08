@@ -47,7 +47,8 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '/' => 'bulletin/index'
+                '/' => 'bulletin/index',
+                'user/update-bulletin/<id:\+d>' => 'user/update-bulletin'
             ],
         ],
     ],

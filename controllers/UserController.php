@@ -10,6 +10,7 @@ use app\models\UploadForm;
 use app\models\UpdateForm;
 use app\models\UpdateBulletinForm;
 use yii\web\UploadedFile;
+use yii\data\Pagination;
 
 class UserController extends Controller
 {
@@ -17,12 +18,24 @@ class UserController extends Controller
     {
         $path = Yii::getAlias('/uploads/');
         $user = User::findIdentity(Yii::$app->user->identity->getId());
-        $bulletins = Bulletin::findAll(['user_id' => $user]);
+
+        $query = Bulletin::find()->where(['user_id' => $user]);
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 10,
+            'totalCount' => $query->count()
+        ]);
+
+        $bulletins = $query->orderBy(['date_add' => SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
 
         return $this->render('index', [
             'user' => $user,
             'path' => $path,
-            'bulletins' => $bulletins
+            'bulletins' => $bulletins,
+            'pagination' => $pagination
         ]);
     }
 
@@ -73,8 +86,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function actionUpdateBulletin($id)
+    public function actionUpdateBulletin()
     {
+        $id = Yii::$app->request->get('id');
         $bulletin = Bulletin::findOne($id);
         $model = new UpdateBulletinForm();
 

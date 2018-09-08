@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\LinkPager;
 
 $this->title = 'Личный кабинет';
 ?>
@@ -32,7 +34,9 @@ $this->title = 'Личный кабинет';
         <div class="list">
             <?php foreach ($bulletins as $bulletin): ?>
                 <div class="list-item">
-                    <?= Html::a('Изменить', '/user/update-bulletin/'.$bulletin->id, ['class' => 'link-bulletin']) ?>
+                    <a href="<?= Url::to(['user/update-bulletin', 'id' => $bulletin->id]) ?>" class="link-bulletin">
+                        Изменить
+                    </a>
                     <header class="list-item__header">
                         <?= Html::encode("{$bulletin->title}") ?>
                     </header>
@@ -47,5 +51,8 @@ $this->title = 'Личный кабинет';
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <?= LinkPager::widget(['pagination' => $pagination]) ?>
+
     </div>
 </aside>
