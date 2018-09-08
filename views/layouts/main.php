@@ -1,13 +1,9 @@
 <?php
 
-/* @var $this \yii\web\View */
-/* @var $content string */
-
 use app\widgets\Alert;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
@@ -43,10 +39,10 @@ AppAsset::register($this);
                 ['label' => 'Войти', 'url' => ['/auth/login']]
             ) : (
                 '<li class="link-right">'
-                . Html::a('Личный кабинет', '/user/index')
+                . Html::a('Личный кабинет, '.Yii::$app->user->identity->username, '/user/index')
                 . Html::beginForm(['/auth/logout'], 'post')
                 . Html::submitButton(
-                    'Выйти (' . Yii::$app->user->identity->username . ')',
+                    'Выйти',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()

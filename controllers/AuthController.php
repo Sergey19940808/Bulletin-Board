@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sergey
- * Date: 07.09.18
- * Time: 13:15
- */
 
 namespace app\controllers;
 
@@ -12,14 +6,35 @@ use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use app\models\LoginForm;
+use app\models\SignUpForm;
+use app\models\User;
 
 class AuthController extends Controller
 {
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
+
+    public function actionSignUp()
+    {
+        if (!Yii::$app->user->isGuest ) {
+            return $this->goHome();
+        }
+
+        $model = new SignUpForm();
+
+        if($model->load(Yii::$app->request->post()) && $model->validate()){
+            $user = new User();
+            $user->username = $model->username;
+            $user->password = Yii::$app->security->generatePasswordHash($model->password);
+            $user->email = $model->email;
+            echo $model->username;
+            if($user->save()){
+                return $this->goHome();
+            }
+        }
+
+        return $this->render('signup', ['model' => $model]);
+    }
+
+
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
@@ -32,16 +47,9 @@ class AuthController extends Controller
         }
 
         $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return $this->render('login', ['model' => $model]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
     public function actionLogout()
     {
         Yii::$app->user->logout();

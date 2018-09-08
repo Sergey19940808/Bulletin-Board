@@ -141,3 +141,6 @@ a.desc:after {
 .link-right {
     display: flex!important;
 }
+.link-sign {
+    text-decoration: none!important;
+}

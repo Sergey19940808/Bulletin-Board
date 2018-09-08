@@ -51,6 +51,7 @@ $config = [
             ],
         ],
     ],
+    'timeZone' => 'Asia/Yekaterinburg',
     'params' => $params,
 ];
 

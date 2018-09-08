@@ -36,3 +36,4 @@ Vagrantfile
 codeception.yml
 docker-compose.yml
 yii.bat
+/migrations/
