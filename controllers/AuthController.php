@@ -27,7 +27,7 @@ class AuthController extends Controller
             $user->email = $model->email;
             echo $model->username;
             if($user->save()){
-                return $this->goHome();
+                return $this->redirect('/auth/login');
             }
         }
 

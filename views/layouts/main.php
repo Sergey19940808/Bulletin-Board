@@ -39,7 +39,7 @@ AppAsset::register($this);
                 ['label' => 'Войти', 'url' => ['/auth/login']]
             ) : (
                 '<li class="link-right">'
-                . Html::a('Личный кабинет, '.Yii::$app->user->identity->username, '/user/index')
+                . Html::a('Личный кабинет', '/user/index')
                 . Html::beginForm(['/auth/logout'], 'post')
                 . Html::submitButton(
                     'Выйти',
