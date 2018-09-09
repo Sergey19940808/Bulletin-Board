@@ -188,3 +188,6 @@ a.desc:after {
 .hide {
     display: none;
 }
+.bulletins {
+    margin: 20px 0 20px 0;
+}

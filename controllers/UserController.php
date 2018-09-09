@@ -11,15 +11,43 @@ use app\models\UpdateForm;
 use app\models\UpdateBulletinForm;
 use yii\web\UploadedFile;
 use yii\data\Pagination;
+use yii\helpers\Url;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 
 class UserController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ]
+        ];
+    }
+
     public function actionIndex()
     {
+        $id = Yii::$app->request->get('id');
         $path = Yii::getAlias('/uploads/');
-        $user = User::findIdentity(Yii::$app->user->identity->getId());
+        $user = User::findOne($id);
 
-        $query = Bulletin::find()->where(['user_id' => $user]);
+        $query = Bulletin::find()->where(['user_id' => $user->id]);
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,
@@ -41,24 +69,22 @@ class UserController extends Controller
 
     public function actionUpload()
     {
+        $id = Yii::$app->request->get('id');
         $dir = Yii::getAlias('@app/web/uploads');
         $model = new UploadForm();
-        $user = User::findOne(Yii::$app->user->identity->getId());
+        $user = User::findOne($id);
 
         if (Yii::$app->request->isPost) {
             $model->file = UploadedFile::getInstance($model, 'file');
 
             if ($model->file && $model->validate()) {
 
-                // delete previous avatar
-                $this->clear($dir.'/'.$user->avatar);
-
                 $model->file->saveAs($dir . '/' . $model->file->baseName . '.' . $model->file->extension);
 
                 $user->avatar = $model->file;
                 $user->save();
 
-                $this->redirect('index');
+                Yii::$app->response->redirect(Url::to(['index', 'id' => $user->id]));
             }
         }
         return $this->render('upload', [
@@ -69,14 +95,15 @@ class UserController extends Controller
 
     public function actionUpdate()
     {
-        $user = User::findOne(Yii::$app->user->identity->getId());
+        $id = Yii::$app->request->get('id');
+        $user = User::findOne($id);
         $model = new UpdateForm();
 
         if($model->load(Yii::$app->request->post()) && $model->validate()){
             $user->username = $model->username;
             $user->email = $model->email;
             if($user->save()){
-                return $this->redirect('/user/index');
+                return Yii::$app->response->redirect(Url::to(['index', 'id' => $user->id]));
             }
         }
 
@@ -97,7 +124,7 @@ class UserController extends Controller
             $bulletin->content = $model->content;
             $bulletin->date_add = $model->date_add;
             if($bulletin->save()){
-                return $this->redirect('/user/index');
+                return Yii::$app->response->redirect(Url::to(['index', 'id' => $bulletin->user_id]));
             }
         }
 
@@ -105,11 +132,5 @@ class UserController extends Controller
             'model' => $model,
             'bulletin' => $bulletin
         ]);
-    }
-
-    public function clear($dir) {
-        if (file_exists($dir)) {
-            unlink($dir);
-        }
     }
 }

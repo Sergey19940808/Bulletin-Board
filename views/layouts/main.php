@@ -2,6 +2,7 @@
 
 use app\widgets\Alert;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use app\assets\AppAsset;
@@ -20,7 +21,12 @@ AppAsset::register($this);
     <?php $this->head() ?>
 </head>
 <body>
-<?php $this->beginBody() ?>
+<?php
+    use app\models\User;
+
+    $this->beginBody();
+    $user = Yii::$app->user->isGuest ? null : User::findIdentity(Yii::$app->user->identity->getId());
+?>
 
 <div class="wrap">
     <?php
@@ -39,7 +45,7 @@ AppAsset::register($this);
                 ['label' => 'Войти', 'url' => ['/auth/login']]
             ) : (
                 '<li class="link-right">'
-                . Html::a('Личный кабинет', '/user/index')
+                . Html::a('Личный кабинет', '/user/index?id='.$user->id)
                 . Html::beginForm(['/auth/logout'], 'post')
                 . Html::submitButton(
                     'Выйти',

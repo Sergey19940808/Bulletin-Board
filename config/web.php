@@ -22,6 +22,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            'loginUrl' => '/auth/login'
         ],
         'errorHandler' => [
             'errorAction' => 'bulletin/error',
@@ -48,10 +49,12 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '/' => 'bulletin/index',
-                'user/update-bulletin/<id:\+d>' => 'user/update-bulletin'
+                'user/update-bulletin/<id:\+d>' => 'user/update-bulletin',
+                'user/index/<id:\+d>' => 'user/index'
             ],
         ],
     ],
+    'defaultRoute' => 'auth',
     'timeZone' => 'Asia/Yekaterinburg',
     'params' => $params,
 ];
