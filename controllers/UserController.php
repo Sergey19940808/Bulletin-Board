@@ -43,11 +43,12 @@ class UserController extends Controller
 
     public function actionIndex()
     {
+        $is_bulletins = Yii::$app->request->get('is_bulletins');
         $id = Yii::$app->request->get('id');
         $path = Yii::getAlias('/uploads/');
         $user = User::findOne($id);
 
-        $query = Bulletin::find()->where(['user_id' => $user->id]);
+        $query = $is_bulletins === '1' ? Bulletin::find() :  Bulletin::find()->where(['user_id' => $user->id]);
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,

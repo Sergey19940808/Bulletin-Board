@@ -5,7 +5,7 @@ use yii\widgets\LinkPager;
 use app\models\User;
 
 $this->title = 'Личный кабинет';
-$user_id = Yii::$app->user->isGuest ? null : User::findIdentity(Yii::$app->user->identity->getId());
+$user_session = Yii::$app->user->isGuest ? null : User::findIdentity(Yii::$app->user->identity->getId());
 ?>
 
 <aside class="personal-area">
@@ -27,7 +27,7 @@ $user_id = Yii::$app->user->isGuest ? null : User::findIdentity(Yii::$app->user-
             </div>
 
             <a href="<?= Url::to(['user/update', 'id' => $user->id]) ?>"
-               class=<?= Html::encode($user->id === $user_id ? 'link-title show' : 'hide') ?>
+               class=<?= Html::encode($user->id === $user_session->id ? 'link-title show' : 'hide') ?>
             >
                 Изменить имя и почту
             </a>
@@ -35,7 +35,7 @@ $user_id = Yii::$app->user->isGuest ? null : User::findIdentity(Yii::$app->user-
     </div>
     <div class="content">
         <a href="<?= Url::to(['user/upload', 'id' => $user->id]) ?>"
-           class=<?= Html::encode($user->id === $user_id ? 'link-image show' : 'hide') ?>
+           class=<?= Html::encode($user->id === $user_session->id ? 'link-image show' : 'hide') ?>
         >
             Изменить аватар
         </a>
@@ -43,7 +43,8 @@ $user_id = Yii::$app->user->isGuest ? null : User::findIdentity(Yii::$app->user-
             Ваши объявления
         </h3>
         <div class="bulletins">
-            <a href="/user/bulletins" class="link-bulletin"
+            <a href="<?= Url::to(['index', 'is_bulletins' => true, 'id' => $user->id]) ?>"
+               class="link-bulletin"
             >
                 Все объявления
             </a>
@@ -52,7 +53,7 @@ $user_id = Yii::$app->user->isGuest ? null : User::findIdentity(Yii::$app->user-
             <?php foreach ($bulletins as $bulletin): ?>
                 <div class="list-item">
                     <a href="<?= Url::to(['user/update-bulletin', 'id' => $bulletin->id]) ?>"
-                       class=<?= Html::encode($user->id === $user_id ? 'link-bulletin show' : 'hide') ?>
+                       class=<?= Html::encode($user->id === $user_session->id ? 'link-bulletin show' : 'hide') ?>
                     >
                         Изменить
                     </a>
